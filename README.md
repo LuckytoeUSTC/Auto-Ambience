@@ -36,3 +36,6 @@ Auto-Ambience 使用 Node.js 本机服务与 Lively Wallpaper 显示动态桌面
 - `build-release.ps1`：将当前公开目录打包为发布版 ZIP，无需编译。
 
 仓库附带通用示例内容。发布自己的版本前，请检查个人文字、图片、绝对路径和运行状态文件。
+## 许可证
+
+本项目采用 [MIT License](LICENSE)。
