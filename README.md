@@ -17,7 +17,7 @@ Auto-Ambience 使用 Node.js 本机服务与 Lively Wallpaper 显示动态桌面
 
 ## 下载与启动
 
-1. 从本仓库 Releases 下载 `Auto-Ambience-v1.0.0.zip`，解压到固定位置。也可以下载或克隆仓库，源码与发布版使用同一套脚本。
+1. [下载 ZIP](https://github.com/LuckytoeUSTC/Auto-Ambience/archive/refs/heads/main.zip)，解压到固定位置；也可点击仓库页面的 **Code → Download ZIP**，或使用 Git 克隆仓库。
 2. 安装 [Node.js LTS](https://nodejs.org/en/download) 和 [Lively Wallpaper](https://github.com/rocksdanister/lively)。
 3. 阅读根目录的 [使用说明.md](使用说明.md)，更换示例图片并编辑 `手动配置.json`。
 4. 双击 `系统/打开桌面.vbs`，在 Lively 中添加 `http://127.0.0.1:18765/` 并设为壁纸。
