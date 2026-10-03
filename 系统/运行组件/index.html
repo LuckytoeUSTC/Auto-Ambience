@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoAmbience</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="daily-background" id="daily-background" aria-hidden="true"><img id="daily-background-image" src="__BACKGROUND_SRC__" alt=""></div>
+  <main class="desktop">
+    <section class="layout">
+      <div class="schedule-column">
+        <div class="schedule"><div class="schedule-image"><img src="__SCHEDULE_SRC__" alt="当前时间表"></div></div>
+        <article class="panel current-doing">
+          <button class="current-doing-open" type="button" data-open-note="doing" aria-label="编辑现在在做什么">
+            <span class="current-doing-title"><span id="current-time">--:--</span>做</span>
+            <span class="current-doing-text"><!-- CURRENT --></span>
+            <span data-open-feedback hidden></span>
+          </button>
+        </article>
+      </div>
+      <div class="middle-stack">
+        <div class="photo" id="photo"><img id="photo-image" src="__PHOTO_SRC__" alt="当前照片"></div>
+        <div class="bottom-row">
+          <article class="panel state">
+            <div class="state-words"><!-- STATE --></div>
+            <button class="state-open" id="state-open" type="button" aria-label="选择状态词" title="选择状态词"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M6 4v9h9M6 13a13 13 0 1 1-1 9"/></svg></button>
+          </article>
+          <div class="marker-controls" aria-label="时间表棋子工具">
+            <button class="marker-control" id="marker-trash" type="button" aria-label="删除选中的棋子" title="删除选中的棋子"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 4h6M6 7l1 14h10l1-14M10 10v8M14 10v8"/></svg></button>
+            <button class="marker-control" id="marker-add" type="button" aria-label="添加棋子" title="点击添加棋子"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="4"/><path d="M9 10h6l3 9H6l3-9z"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="right-stack">
+        <article class="panel want">
+          <h2><button class="title-link" type="button" role="link" data-open-note="want">想做的事</button></h2>
+          <!-- WANT -->
+        </article>
+        <article class="panel research">
+          <h2><button class="title-link" type="button" role="link" data-open-note="research">工作规划</button></h2>
+          <!-- RESEARCH -->
+        </article>
+        <article class="panel deadlines">
+          <h2><button class="title-link" type="button" role="link" data-open-note="ddl">DDL</button></h2>
+          <ol><!-- DEADLINES --></ol>
+        </article>
+      </div>
+    </section>
+  </main>
+  <div class="marker-layer" id="marker-layer" aria-label="时间表标记"></div>
+  <div class="state-menu" id="state-menu" hidden>
+    <div class="state-window" role="dialog" aria-modal="true" aria-labelledby="state-menu-title">
+      <div class="state-menu-head"><button class="title-link" id="state-menu-title" type="button" role="link" data-open-note="state">状态标签</button><button id="state-close" type="button" aria-label="关闭">[ × ]</button></div>
+      <div class="state-options" id="state-options"></div>
+      <div class="state-menu-foot"><span id="state-message">单击切换 · 自动保存</span><button id="state-done" type="button">[ 完成 ]</button></div>
+    </div>
+  </div>
+  <script src="/presence-state-selector.js"></script>
+  <script src="/schedule-markers.js"></script>
+  <script>
+    function syncWorkArea() {
+      const screenLeft = Number.isFinite(window.screenX) ? window.screenX : 0;
+      const screenTop = Number.isFinite(window.screenY) ? window.screenY : 0;
+      const left = Math.max(0, screen.availLeft - screenLeft);
+      const top = Math.max(0, screen.availTop - screenTop);
+      const right = Math.max(0, screenLeft + screen.width - screen.availLeft - screen.availWidth);
+      const bottom = Math.max(0, screenTop + screen.height - screen.availTop - screen.availHeight);
+      const root = document.documentElement.style;
+      root.setProperty('--workarea-top', top + 'px');
+      root.setProperty('--workarea-right', right + 'px');
+      root.setProperty('--workarea-bottom', bottom + 'px');
+      root.setProperty('--workarea-left', left + 'px');
+    }
+    syncWorkArea();
+    window.addEventListener('resize', syncWorkArea);
+
+    function updateCurrentTime() {
+      const now = new Date();
+      const hour = now.getHours();
+      const period = hour < 6 ? '凌晨' : hour < 9 ? '早上' : hour < 12 ? '上午' :
+        hour < 14 ? '中午' : hour < 18 ? '下午' : '晚上';
+      document.getElementById('current-time').textContent =
+        period + String(hour % 12 || 12) + ':' +
+        String(now.getMinutes()).padStart(2, '0');
+    }
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 15000);
+
+    document.querySelectorAll('[data-open-note]').forEach(button => {
+      const title = button.textContent;
+      const feedback = button.querySelector('[data-open-feedback]');
+      const feedbackText = feedback ? feedback.textContent : '';
+      const showFeedback = message => {
+        if (feedback) feedback.textContent = message;
+        else button.textContent = message;
+      };
+      let opening = false;
+      button.addEventListener('click', async () => {
+        if (opening) return;
+        opening = true;
+        button.removeAttribute('title');
+        showFeedback('正在打开…');
+        try {
+          const response = await fetch('/_open-note/' + button.dataset.openNote, {method:'POST'});
+          if (!response.ok) throw new Error(await response.text());
+          showFeedback('已交给默认编辑器');
+        } catch (error) {
+          showFeedback('打开失败');
+          button.title = error.message;
+          console.error('打开文件失败', error);
+        } finally {
+          setTimeout(() => {
+            if (feedback) feedback.textContent = feedbackText;
+            else button.textContent = title;
+            opening = false;
+          }, 1500);
+        }
+      });
+    });
+
+    function setAverageColor(image, target) {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 32;
+      const context = canvas.getContext('2d', {willReadFrequently:true});
+      context.drawImage(image, 0, 0, 32, 32);
+      const pixels = context.getImageData(0, 0, 32, 32).data;
+      let red = 0, green = 0, blue = 0, weight = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        const alpha = pixels[i + 3] / 255;
+        red += pixels[i] * alpha;
+        green += pixels[i + 1] * alpha;
+        blue += pixels[i + 2] * alpha;
+        weight += alpha;
+      }
+      if (weight) {
+        target.style.backgroundColor = 'rgb(' +
+          Math.round(red / weight) + ',' +
+          Math.round(green / weight) + ',' +
+          Math.round(blue / weight) + ')';
+      }
+    }
+    for (const [image, target] of [
+      [document.getElementById('daily-background-image'), document.getElementById('daily-background')],
+      [document.getElementById('photo-image'), document.getElementById('photo')],
+    ]) {
+      image.addEventListener('load', () => setAverageColor(image, target));
+      if (image.complete && image.naturalWidth) setAverageColor(image, target);
+    }
+  </script></body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

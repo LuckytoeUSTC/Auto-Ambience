@@ -1,0 +1,10 @@
+.git/
+releases/
+*.zip
+node_modules/
+*.log
+系统/运行组件/省电状态.json
+系统/运行组件/当前输入法模式.json
+系统/运行组件/省电日志.txt
+系统/运行组件/省电快照.jpg
+系统/运行组件/原系统壁纸.jpg

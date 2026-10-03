@@ -1,0 +1,101 @@
+:root{color-scheme:dark;--green:#8ed973;--yellow:#ffff00;--workarea-top:0px;--workarea-right:0px;--workarea-bottom:82px;--workarea-left:0px}
+*{box-sizing:border-box;border-radius:0!important}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:"Microsoft YaHei UI","Noto Sans CJK SC",Arial,sans-serif}
+body{color:#fff;background:#2010ff}
+[hidden]{display:none!important}
+
+/* Daily background */
+.daily-background{position:fixed;inset:0;z-index:0;overflow:hidden;background:#2010ff}
+.daily-background img{position:absolute;top:50%;left:50%;display:block;width:auto;height:100%;max-width:none;opacity:.6;transform:translate(-50%,-50%)}
+
+/* Three-column desktop */
+.desktop{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;padding:var(--workarea-top) var(--workarea-right) var(--workarea-bottom) var(--workarea-left);overflow:hidden}
+.layout{display:grid;grid-template-columns:minmax(0,1.16fr) minmax(0,1fr) minmax(0,.86fr);grid-template-rows:minmax(0,1fr);flex:1;min-height:0;gap:14px}
+.middle-stack,.right-stack{display:flex;flex-direction:column;min-height:0;gap:14px}
+.middle-stack{grid-column:1;grid-row:1}
+.right-stack{grid-column:3;grid-row:1;justify-content:space-between;overflow:hidden}
+.right-stack::-webkit-scrollbar,.state-options::-webkit-scrollbar{display:none}
+
+.schedule-column{grid-column:2;grid-row:1;display:flex;flex-direction:column;min-height:0}
+.schedule{display:flex;align-items:flex-start;justify-content:center;min-height:0;padding-top:64px;overflow:hidden}
+.schedule-image{width:100%;height:auto;min-height:0;overflow:hidden}
+.schedule-image img{display:block;width:100%;height:auto}
+.photo{position:relative;flex:1;min-height:250px;overflow:hidden;border:3px solid #fff;background:#000}
+.photo img{position:absolute;top:50%;left:50%;display:block;width:auto;height:100%;max-width:none;transform:translate(-50%,-50%)}
+
+/* Text panels */
+.panel{padding:16px;border:3px solid #fff;color:#fff;background:#050505}
+.panel h2{margin:0 0 14px;font-size:20px;font-weight:900;line-height:1.15;letter-spacing:.01em}
+.right-stack .panel{flex-shrink:0;padding:14px 16px}
+.current-doing{flex:none;margin-top:auto;padding:0!important;border-color:#000!important;color:#000;background:#00eaff!important}
+.current-doing-open{appearance:none;display:flex;width:100%;flex-direction:column;align-items:stretch;gap:7px;padding:14px 16px;border:0;color:inherit;background:transparent;font:inherit;text-align:left;cursor:pointer}
+.current-doing-open:hover,.current-doing-open:focus-visible{outline:4px solid #000;outline-offset:-7px}
+.current-doing-title{font-size:22px;font-weight:900;line-height:1.1}
+.current-doing-text{min-height:1.35em;font:800 16px/1.35 "Microsoft YaHei UI","Noto Sans CJK SC",Arial,sans-serif;white-space:pre-wrap;word-break:break-word}
+.title-link{appearance:none;margin:0;padding:0;border:0;color:inherit;background:transparent;font:inherit;line-height:inherit;letter-spacing:inherit;text-align:left;cursor:pointer}
+.title-link:hover,.title-link:focus-visible{text-decoration:underline;text-underline-offset:4px}
+.md-lines{margin:0;color:inherit;font:600 13px/1.35 "Microsoft YaHei UI","Noto Sans CJK SC",Arial,sans-serif;white-space:pre-wrap;word-break:break-word}
+.want{border-color:#000;color:#000;background:#00eaff}
+.research{border-color:#00eaff}
+.research h2{color:#00eaff}
+.research-source{padding:6px 0;border-top:2px solid #00eaff}
+.deadlines{border-color:#ff1010;color:#ff1010;background:#050505}
+.deadlines *{color:#ff1010}
+.deadlines ol{margin:0;padding:0;list-style:none}
+.deadlines li{display:flex;gap:12px;padding:8px 0;border-top:2px solid #ff1010}
+.deadlines time{min-width:61px;font:900 22px/1 Arial,sans-serif}
+.deadlines strong{font-size:13px}
+.deadlines p{margin:4px 0;font-size:11px;line-height:1.3}
+.deadlines em{font-size:11px;font-style:normal;font-weight:800}
+
+/* State strip and separate pawn toolbar */
+.bottom-row{display:flex;flex:none;align-items:stretch;min-width:0;gap:8px}
+.state{display:flex;flex:1;align-items:center;min-width:0;gap:10px;padding:10px 12px;border-color:#000;color:#000;background:var(--green);box-shadow:none}
+.state-words{display:flex;flex:1;flex-wrap:wrap;gap:6px}
+.state-words span{display:inline-block;padding:5px 7px;color:var(--green);background:var(--yellow);font-size:14px;font-weight:800;text-shadow:none;-webkit-text-stroke:0}
+.state-open,.marker-control{appearance:none;display:grid;place-items:center;width:38px;height:38px;padding:2px;border:0;color:var(--yellow);background:var(--green);cursor:pointer;box-shadow:none}
+.state-open:hover,.state-open:focus-visible,.marker-control:hover,.marker-control:focus-visible{outline:2px solid var(--yellow);outline-offset:-4px}
+.state-open svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:square;stroke-linejoin:miter}
+.marker-controls{display:flex;flex:none;align-items:center;gap:3px;padding:5px;border:3px solid #000;background:var(--green);box-shadow:none}
+.marker-control svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter}
+
+/* Schedule pawns */
+.marker-layer{position:fixed;inset:0;z-index:4;pointer-events:none}
+.pawn-marker{appearance:none;position:absolute;width:32px;height:32px;margin:0;padding:0;border:0;background:transparent;cursor:pointer;pointer-events:auto;user-select:none}
+.pawn-marker img{display:block;width:100%;height:100%;margin:0;pointer-events:none;user-select:none}
+.pawn-marker.selected{outline:2px solid var(--yellow);outline-offset:2px}
+.pawn-nudge{position:absolute;display:grid;place-items:center;width:22px;height:22px;margin:0;padding:0;border:0;color:var(--yellow);background:var(--green);cursor:pointer;pointer-events:auto;box-shadow:none}
+.pawn-nudge svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:square;stroke-linejoin:miter}
+.pawn-nudge:hover,.pawn-nudge:focus-visible{outline:2px solid var(--yellow);outline-offset:-3px}
+
+/* State selector */
+.state-menu{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgba(0,0,0,.88);font-family:Consolas,"Microsoft YaHei UI",monospace}
+.state-window{display:flex;flex-direction:column;width:min(560px,90vw);max-height:80vh;border:3px solid #00ffff;color:#fff;background:#001278;box-shadow:12px 12px 0 #000}
+.state-menu-head,.state-menu-foot{display:flex;align-items:center;justify-content:space-between;min-height:42px;gap:12px;padding:9px 12px;color:#001278;background:#00ffff;font-weight:900}
+.state-menu-head{font-size:21px}
+.state-menu-foot{font-size:12px}
+.state-menu-head button,.state-menu-foot button{appearance:none;padding:4px 7px;border:0;color:#00ffff;background:#001278;font:800 14px Consolas,monospace;white-space:nowrap;cursor:pointer}
+.state-menu-head #state-menu-title{appearance:none;margin:0;padding:0;border:0;color:#001278;background:transparent;font:900 30px/1.15 "DengXian","等线","Microsoft YaHei UI",sans-serif;text-align:left}
+.state-menu-head #state-menu-title:hover,.state-menu-head #state-menu-title:focus-visible{text-decoration:underline;text-underline-offset:5px}
+.state-options{display:flex;flex-direction:column;gap:4px;padding:12px;overflow-y:auto;scrollbar-width:none}
+.state-option{appearance:none;padding:8px 10px;border:0;color:#fff;background:transparent;font:800 18px/1.3 Consolas,"Microsoft YaHei UI",monospace;text-align:left;cursor:pointer}
+.state-option[aria-pressed="true"]{color:#ffff00}
+.state-option[aria-pressed="false"]{color:#8ba6cf}
+.state-option:hover,.state-option:focus-visible{color:#001278;background:#00ffff;outline:none}
+.state-option:disabled{opacity:.55}
+
+@media(max-width:1050px){
+  .layout{grid-template-columns:1fr 1fr}
+  .schedule-column{grid-column:1;grid-row:1/span 2}
+  .middle-stack{grid-column:2;grid-row:1}
+  .right-stack{grid-column:2;grid-row:2}
+  .schedule-image{min-height:0}
+}
+
+@media(max-width:700px){
+  .layout{display:flex;flex-direction:column;gap:12px}
+  .middle-stack,.right-stack{display:flex;gap:12px}
+  .schedule-column,.schedule{display:flex}
+  .schedule-image{height:auto;min-height:0}
+  .photo{flex:none;height:360px}
+}
