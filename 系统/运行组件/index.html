@@ -21,7 +21,11 @@
         </article>
       </div>
       <div class="middle-stack">
-        <div class="photo" id="photo"><img id="photo-image" src="__PHOTO_SRC__" alt="当前照片"></div>
+        <div class="photo" id="photo">
+          <img id="photo-image" src="__PHOTO_SRC__" alt="当前照片">
+          <div class="photo-picker" id="photo-picker" hidden aria-label="照片选择"></div>
+          <button class="photo-open" id="photo-open" type="button" aria-label="选择照片" aria-expanded="false" aria-controls="photo-picker"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M6 4v9h9M6 13a13 13 0 1 1-1 9"/></svg></button>
+        </div>
         <div class="bottom-row">
           <article class="panel state">
             <div class="state-words"><!-- STATE --></div>
@@ -58,6 +62,7 @@
     </div>
   </div>
   <script src="/presence-state-selector.js"></script>
+  <script src="/photo-selector.js"></script>
   <script src="/schedule-markers.js"></script>
   <script>
     function syncWorkArea() {

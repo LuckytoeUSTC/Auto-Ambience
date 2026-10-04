@@ -99,3 +99,22 @@ body{color:#fff;background:#2010ff}
   .schedule-image{height:auto;min-height:0}
   .photo{flex:none;height:360px}
 }
+.photo-open{position:absolute;right:8px;bottom:8px;z-index:2;display:grid;place-items:center;width:38px;height:38px;padding:2px;border:0;color:var(--yellow);background:transparent;cursor:pointer;opacity:0;pointer-events:none}
+.photo:hover .photo-open,.photo:focus-within .photo-open,.photo-open[aria-expanded="true"]{opacity:1;pointer-events:auto}
+.photo-open svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:square;stroke-linejoin:miter}
+.photo-open:focus-visible{outline:2px solid var(--yellow)}
+.photo-open[data-error]{color:#ff5050}
+.photo-picker{position:absolute;inset:50% 0 0;display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:8px;padding:10px 8px 10px 10px;background:rgba(80,80,80,.76);overflow:hidden}
+.photo-option{display:flex;flex-direction:column;gap:4px;min-width:0;min-height:0;padding:3px;border:2px solid transparent;background:transparent;color:#fff;font:12px/1.35 "Microsoft YaHei UI",sans-serif;cursor:pointer}
+.photo-option[aria-pressed="true"]{border-color:var(--green)}
+.photo-option:hover,.photo-option:focus-visible{outline:1px solid #fff;outline-offset:-1px}
+.photo .photo-option img{position:static;display:block;width:100%;height:0;flex:1;min-height:0;max-width:100%;transform:none;object-fit:contain;background:rgba(0,0,0,.15)}
+.photo-option span{flex:none;display:block;width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:center}
+.photo-option:disabled{cursor:wait;opacity:.65}
+.photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;min-width:0;min-height:0}
+.photo-pages{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;padding-bottom:42px;min-height:0}
+.photo-page-count{font:12px/1.4 "Microsoft YaHei UI",sans-serif;color:#fff;text-align:center}
+.photo-page-arrow{display:grid;place-items:center;flex:none;width:38px;height:38px;padding:2px;border:0;background:transparent;color:var(--yellow);cursor:pointer}
+.photo-page-arrow svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:square;stroke-linejoin:miter}
+.photo-page-arrow:disabled{color:#999;cursor:default}
+.photo-page-arrow:focus-visible{outline:2px solid var(--yellow)}

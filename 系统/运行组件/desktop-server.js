@@ -19,6 +19,23 @@ function manualConfig() {
   return JSON.parse(fs.readFileSync(path.join(ROOT, MANUAL_CONFIG), 'utf8'));
 }
 
+function photoList() {
+ return fs.readdirSync(path.join(ROOT,'照片'),{withFileTypes:true}).filter(item=>item.isFile()&&IMAGE_FILE.test(item.name)).map(item=>item.name).sort((a,b)=>a.localeCompare(b,'zh-CN',{numeric:true}));
+}
+function photoFile(name) {
+ if(typeof name!=='string'||name!==path.basename(name)||!photoList().includes(name))throw Error('图片不存在');
+ return path.join(ROOT,'照片',name);
+}
+async function updatePhoto(req,res) {
+ try{
+  if(req.headers.origin&&req.headers.origin!==`http://${HOST}:${PORT}`){res.writeHead(403);return res.end('Forbidden');}
+  let raw='';for await(const chunk of req){raw+=chunk;if(raw.length>4096)throw Error('请求过长');}
+  const {name}=JSON.parse(raw);photoFile(name);const config=manualConfig();config['左侧照片']=name;
+  const file=path.join(ROOT,MANUAL_CONFIG),temporary=file+'.tmp';
+  fs.writeFileSync(temporary,JSON.stringify(config,null,2)+'\n','utf8');fs.renameSync(temporary,file);
+  res.writeHead(200,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify({selected:name}));
+ }catch(error){res.writeHead(400,{'Content-Type':'text/plain; charset=utf-8'});res.end(error.message);}
+}
 function visibleLines(file) {
   return fs.readFileSync(file, 'utf8').split(/\r?\n/).map(line => {
     const visible = line.replace(/%%.*?%%|<!--.*?-->/g, '').trimEnd();
@@ -190,7 +207,7 @@ function selectedImage(configKey, folderName) {
 }
 function revisionFiles() {
   return [
-    path.join(__dirname, 'index.html'), path.join(__dirname, 'style.css'), path.join(__dirname, 'presence-state-selector.js'), path.join(__dirname, 'schedule-markers.js'), path.join(__dirname, 'yellow-pawn.png'), path.join(__dirname, 'WindowFocus.cs'), path.join(__dirname, 'note-opener.ps1'), path.join(__dirname, 'current-task-editor.ps1'),
+    path.join(__dirname, 'photo-selector.js'), path.join(__dirname, 'index.html'), path.join(__dirname, 'style.css'), path.join(__dirname, 'presence-state-selector.js'), path.join(__dirname, 'schedule-markers.js'), path.join(__dirname, 'yellow-pawn.png'), path.join(__dirname, 'WindowFocus.cs'), path.join(__dirname, 'note-opener.ps1'), path.join(__dirname, 'current-task-editor.ps1'),
     path.join(ROOT, WANT_NOTE), path.join(ROOT, PRESENCE_STATE_NOTE),
     path.join(ROOT, CURRENT_TASK_NOTE),
     path.join(ROOT, RESEARCH_NOTE), path.join(ROOT, MANUAL_CONFIG),
@@ -260,12 +277,13 @@ function render() {
     .replace('__SCHEDULE_SRC__', '/_selected-schedule')
     .replace('__BACKGROUND_SRC__', '/_background-wallpaper?version=' + encodeURIComponent(backgroundWallpaper().version));
   const current = JSON.stringify(revision());
-  const live = `<script>const version=${current};setInterval(async()=>{try{const r=await fetch('/_version',{cache:'no-store'});if(r.ok&&(await r.text())!==version&&!window.autoAmbienceStateMenuOpen)location.reload()}catch{}},3000)</script>`;
+  const live = `<script>const version=${current};setInterval(async()=>{try{const r=await fetch('/_version',{cache:'no-store'});if(r.ok&&(await r.text())!==version&&!window.autoAmbienceStateMenuOpen&&!window.autoAmbiencePhotoMenuOpen)location.reload()}catch{}},3000)</script>`;
   return page.replace('</body>', `${live}\n</body>`);
 }
 
 const MIME = {'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.md':'text/plain; charset=utf-8','.txt':'text/plain; charset=utf-8'};
 const STATIC_FILES = new Map([
+  ['/photo-selector.js', 'photo-selector.js'],
   ['/style.css', 'style.css'],
   ['/presence-state-selector.js', 'presence-state-selector.js'],
   ['/schedule-markers.js', 'schedule-markers.js'],
@@ -297,6 +315,15 @@ http.createServer((req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, `http://${HOST}:${PORT}`).pathname);
     res.setHeader('Cache-Control', 'no-store');
+    if(pathname==='/_photos'&&req.method==='GET'){
+      res.writeHead(200,{'Content-Type':'application/json; charset=utf-8'});
+      return res.end(JSON.stringify({names:photoList(),selected:manualConfig()['左侧照片']}));
+    }
+    if(pathname==='/_photos'&&req.method==='POST')return updatePhoto(req,res);
+    if(pathname==='/_photo'&&req.method==='GET'){
+      const file=photoFile(new URL(req.url,`http://${HOST}:${PORT}`).searchParams.get('name'));
+      res.writeHead(200,{'Content-Type':MIME[path.extname(file).toLowerCase()]});return fs.createReadStream(file).pipe(res);
+    }
     if (pathname === '/_markers' && req.method === 'GET') return sendMarkers(res, markerData());
     if (pathname === '/_markers' && req.method === 'POST') return updateMarkers(req, res);
     if (pathname === '/_health') {

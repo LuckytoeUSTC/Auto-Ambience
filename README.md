@@ -6,6 +6,7 @@ Auto-Ambience 使用 Node.js 本机服务与 Lively Wallpaper 显示动态桌面
 
 ## 功能
 
+- 在照片区域选择图片：每页三列两行，按钮翻页，点击预览并自动保存，无需手改 JSON。
 - 展示照片、时间表、想做的事、工作规划和按日期排序的 DDL。
 - 点击“现在做”区域，打开简洁的原生输入框并保存内容。
 - 在桌面切换 Markdown 状态标签。
@@ -17,9 +18,9 @@ Auto-Ambience 使用 Node.js 本机服务与 Lively Wallpaper 显示动态桌面
 
 ## 下载与启动
 
-1. [下载 ZIP](https://github.com/LuckytoeUSTC/Auto-Ambience/archive/refs/heads/main.zip)，解压到固定位置；也可点击仓库页面的 **Code → Download ZIP**，或使用 Git 克隆仓库。
+1. 从 [Releases](https://github.com/LuckytoeUSTC/Auto-Ambience/releases) 下载 `Auto-Ambience-v1.1.0.zip`，解压到固定位置；也可点击仓库页面的 **Code → Download ZIP** 获取最新源码。
 2. 安装 [Node.js LTS](https://nodejs.org/en/download) 和 [Lively Wallpaper](https://github.com/rocksdanister/lively)。
-3. 阅读根目录的 [使用说明.md](使用说明.md)，更换示例图片并编辑 `手动配置.json`。
+3. 阅读根目录的 [使用说明.md](使用说明.md)，将照片放入 `照片/`，时间表、背景和省电阈值按说明配置；启动后可直接在桌面选择照片。
 4. 双击 `系统/打开桌面.vbs`，在 Lively 中添加 `http://127.0.0.1:18765/` 并设为壁纸。
 
 系统要求：Windows 10/11，Node.js LTS，Lively Wallpaper。Node.js 与 Lively 不包含在发布版中。PowerShell、VBS 和 C# 辅助代码用于 Windows 原生交互，所需辅助代码由脚本在运行时加载。
